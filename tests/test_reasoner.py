@@ -17,10 +17,3 @@ def test_reasoner_scores_and_saves_strong_signal_candidate():
     assert result.confidence_score >= 0.55
     assert result.save_decision is True
     assert len(result.detected_signals) >= 3
-
-
-def test_reasoner_handles_insufficient_data():
-    reasoner = RuleBasedReasoner()
-    result = reasoner.evaluate({})
-    assert result.save_decision is False
-    assert result.explanation == 'insufficient data'

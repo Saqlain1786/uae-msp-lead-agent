@@ -16,31 +16,19 @@ SERVICE_KEYWORDS = [
 ]
 
 
-def extract_signals(html: str | None, base_url: str | None, fallback_text: str = "") -> dict:
-    safe_html = html or ""
-    safe_base = base_url or ""
-    safe_text = fallback_text or ""
+def extract_signals(html: str, base_url: str, fallback_text: str = "") -> dict:
+    soup = BeautifulSoup(html or "", "html.parser")
+    text = " ".join(soup.stripped_strings)
+    text = f"{fallback_text} {text}".strip().lower()
 
-    try:
-        soup = BeautifulSoup(safe_html, "html.parser")
-    except Exception:
-        soup = BeautifulSoup("", "html.parser")
+    emails = sorted(set(re.findall(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", text, re.IGNORECASE)))
+    phones = sorted(set(re.findall(r"(?:\+971|0)?\s?\d(?:[\s\-]?\d){7,10}", text)))
 
-    merged_text = " ".join(soup.stripped_strings)
-    text = f"{safe_text} {merged_text}".strip().lower()
-
-    emails = sorted(set(re.findall(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", text, re.IGNORECASE))) if text else []
-    phones = sorted(set(re.findall(r"(?:\+971|0)?\s?\d(?:[\s\-]?\d){7,10}", text))) if text else []
-
-    links: list[str] = []
+    links = []
     careers_page = None
     contact_page = None
-
     for a in soup.find_all("a", href=True):
-        href_raw = a.get("href")
-        if not href_raw:
-            continue
-        href = urljoin(safe_base, href_raw)
+        href = urljoin(base_url, a["href"])
         label = (a.get_text() or "").lower()
         links.append(href)
         if any(k in href.lower() or k in label for k in ["career", "job", "vacanc"]):
@@ -48,16 +36,16 @@ def extract_signals(html: str | None, base_url: str | None, fallback_text: str =
         if "contact" in href.lower() or "contact" in label:
             contact_page = contact_page or href
 
-    cities = [city for city in UAE_CITIES if city.lower() in text] if text else []
-    keywords = [kw for kw in SERVICE_KEYWORDS if kw in text] if text else []
+    cities = [city for city in UAE_CITIES if city.lower() in text]
+    keywords = [kw for kw in SERVICE_KEYWORDS if kw in text]
 
     return {
-        "emails": emails or [],
-        "phones": phones or [],
-        "links": sorted(set(links)) if links else [],
+        "emails": emails,
+        "phones": phones,
+        "links": sorted(set(links)),
         "careers_page": careers_page,
         "contact_page": contact_page,
-        "uae_cities": cities or [],
-        "service_keywords": keywords or [],
+        "uae_cities": cities,
+        "service_keywords": keywords,
         "text": text,
     }
