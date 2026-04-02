@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Stored Leads</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>company_name</th><th>website</th><th>city</th><th>lead_type</th><th>confidence_score</th><th>created_at</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in leads %}
+      <tr>
+        <td>{{ l.company_name }}</td>
+        <td><a href="{{ l.website }}" target="_blank">{{ l.website }}</a></td>
+        <td>{{ l.city }}</td>
+        <td>{{ l.lead_type }}</td>
+        <td>{{ l.confidence_score }}</td>
+        <td>{{ l.created_at }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

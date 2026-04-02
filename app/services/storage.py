@@ -88,6 +88,14 @@ def create_run_log(payload: dict) -> int:
         return cur.lastrowid
 
 
+def list_run_logs(limit: int = 100) -> list[dict]:
+    with get_connection() as conn:
+        rows = conn.execute(
+            "SELECT * FROM run_logs ORDER BY id DESC LIMIT ?", (limit,)
+        ).fetchall()
+    return [dict(r) for r in rows]
+
+
 def latest_run_log() -> dict | None:
     with get_connection() as conn:
         row = conn.execute("SELECT * FROM run_logs ORDER BY id DESC LIMIT 1").fetchone()
