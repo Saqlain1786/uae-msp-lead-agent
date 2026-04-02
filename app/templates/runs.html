@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Run Logs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>started_at</th><th>finished_at</th><th>status</th><th>candidates_seen</th><th>leads_saved</th><th>summary</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in runs %}
+      <tr>
+        <td>{{ r.started_at }}</td>
+        <td>{{ r.finished_at }}</td>
+        <td>{{ r.status }}</td>
+        <td>{{ r.candidates_seen }}</td>
+        <td>{{ r.leads_saved }}</td>
+        <td>{{ r.summary }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

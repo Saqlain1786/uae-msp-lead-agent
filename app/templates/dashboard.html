@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+{% if message %}
+<div class="banner">{{ message }}</div>
+{% endif %}
+<div class="grid">
+  <div class="card"><h3>Scheduler</h3><p>{{ "Enabled" if scheduler_enabled else "Disabled" }}</p></div>
+  <div class="card"><h3>Last Run</h3><p>{{ last_run_time or "N/A" }}</p></div>
+  <div class="card"><h3>Next Run</h3><p>{{ next_run_time or "N/A" }}</p></div>
+  <div class="card"><h3>Leads Found Today</h3><p>{{ leads_found_today }}</p></div>
+  <div class="card"><h3>Leads Saved Today</h3><p>{{ leads_saved_today }}</p></div>
+</div>
+<div class="card">
+  <h3>Latest Daily Report</h3>
+  <p>{{ report.summary_text if report else "No report available yet." }}</p>
+  <form action="/run-agent-ui" method="post">
+    <button type="submit">Run Agent Now</button>
+  </form>
+</div>
+{% endblock %}
