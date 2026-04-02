@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: uae-msp-lead-agent
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      - key: DISCOVERY_MODE
+        value: mock
+      - key: SCHEDULER_ENABLED
+        value: "true"
+      - key: SCHEDULER_HOUR_UTC
+        value: "5"
+      - key: SCHEDULER_MINUTE_UTC
+        value: "0"
